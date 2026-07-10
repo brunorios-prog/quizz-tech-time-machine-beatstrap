@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tech Time Machine — The Beatstrap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #070F1A;
+  --surface:     #111827;
+  --surface2:    #1F2937;
+  --borda:       #374151;
+  --texto:       #F9FAFB;
+  --muted:       #9CA3AF;
+  --suave:       #6B7280;
+  --roxo:        #5B4FE8;
+  --roxo-dim:    #1E1B4B;
+  --roxo-claro:  #A5B4FC;
+  --verde:       #10B981;
+  --verde-dim:   #064E3B;
+  --vermelho:    #EF4444;
+  --vermelho-dim:#7F1D1D;
+  --amarelo:     #F59E0B;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--bg);
+  color: var(--texto);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── TELA INICIAL ────────────────────────────────── */
+#tela-intro {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+#tela-intro::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(91,79,232,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.intro-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--roxo-dim);
+  border: 1px solid rgba(91,79,232,0.4);
+  border-radius: 100px;
+  padding: 5px 14px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--roxo-claro);
+  margin-bottom: 28px;
+}
+.intro-badge-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--roxo);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+.intro-title {
+  font-size: clamp(32px, 6vw, 64px);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  margin-bottom: 16px;
+  max-width: 700px;
+}
+.intro-title span { color: var(--roxo-claro); }
+
+.intro-sub {
+  font-size: clamp(14px, 2vw, 17px);
+  color: var(--muted);
+  max-width: 500px;
+  line-height: 1.7;
+  margin-bottom: 40px;
+}
+
+.intro-stats {
+  display: flex;
+  gap: 32px;
+  justify-content: center;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.intro-stat { text-align: center; }
+.intro-stat-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--roxo-claro);
+  letter-spacing: -0.02em;
+}
+.intro-stat-label { font-size: 12px; color: var(--suave); margin-top: 2px; }
+
+.btn-primary {
+  background: var(--roxo);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 36px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.btn-primary:hover { background: #4840D4; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+
+.intro-rodadas {
+  display: flex;
+  gap: 6px;
+  margin-top: 28px;
+  justify-content: center;
+}
+.intro-rodada-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--borda);
+}
+
+/* ── TELA DE JOGO ────────────────────────────────── */
+#tela-jogo { display: none; min-height: 100vh; flex-direction: column; }
+
+/* Header do jogo */
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--borda);
+  background: var(--surface);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+.game-logo {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--texto);
+}
+.game-logo span { color: var(--roxo-claro); }
+
+.game-progress-wrap { flex: 1; max-width: 280px; margin: 0 24px; }
+.game-progress-label {
+  font-size: 11px;
+  color: var(--suave);
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+.game-progress-bar {
+  height: 4px;
+  background: var(--borda);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.game-progress-fill {
+  height: 100%;
+  background: var(--roxo);
+  border-radius: 2px;
+  transition: width 0.4s ease;
+}
+
+.game-score {
+  text-align: right;
+}
+.game-score-num {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--roxo-claro);
+  letter-spacing: -0.01em;
+}
+.game-score-label { font-size: 10px; color: var(--suave); }
+
+/* Layout do jogo — empilhado por padrão (Desafio 1: foto em cima, controles embaixo) */
+.jogo-layout {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Foto */
+.foto-section {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 24px 0;
+  width: 100%;
+}
+.foto-wrap {
+  position: relative;
+  width: 100%;
+  height: 420px; /* altura fixa (400–450px), igual para as 7 fotos */
+  overflow: hidden;
+  border-radius: 16px;
+  background: #000;
+}
+.foto-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: filter 0.3s;
+}
+.foto-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(7,15,26,0.95) 100%);
+  pointer-events: none;
+}
+.foto-rodada-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: rgba(7,15,26,0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Área de controles */
+.game-controls {
+  flex: 1;
+  padding: 24px;
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Fase 1 — Slider de ano */
+.fase-slider {}
+.fase-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--roxo-claro);
+  margin-bottom: 8px;
+}
+.fase-question {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--texto);
+  margin-bottom: 24px;
+  line-height: 1.3;
+}
+
+.ano-display {
+  text-align: center;
+  margin-bottom: 16px;
+}
+.ano-num {
+  font-size: 72px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--texto);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  transition: color 0.15s;
+}
+
+.slider-wrap { position: relative; margin-bottom: 10px; }
+
+input[type="range"] {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--borda);
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--roxo);
+  cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(91,79,232,0.2);
+  transition: box-shadow 0.15s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 0 8px rgba(91,79,232,0.2);
+}
+
+.slider-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  color: var(--suave);
+  margin-top: 6px;
+}
+
+.btn-confirmar-ano {
+  width: 100%;
+  background: var(--roxo);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: all 0.15s;
+}
+.btn-confirmar-ano:hover:not(:disabled) { background: #4840D4; }
+.btn-confirmar-ano:disabled {
+  background: var(--surface2);
+  color: var(--suave);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Feedback do ano */
+.ano-feedback {
+  display: none;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  border: 1px solid;
+}
+.ano-feedback.acerto  { background: var(--verde-dim); border-color: var(--verde); }
+.ano-feedback.erro    { background: var(--vermelho-dim); border-color: var(--vermelho); }
+.ano-feedback-titulo  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.ano-feedback.acerto .ano-feedback-titulo { color: var(--verde); }
+.ano-feedback.erro .ano-feedback-titulo   { color: var(--vermelho); }
+.ano-feedback-texto   { font-size: 13px; color: var(--muted); }
+
+/* Fase 2 — Múltipla escolha */
+.fase-multipla { display: none; }
+
+/* Resumo do ano escolhido no Desafio 1, mantido visível no Desafio 2 */
+.ano-resumo {
+  display: inline-block;
+  background: var(--roxo-dim);
+  border: 1px solid rgba(91,79,232,0.4);
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--roxo-claro);
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+}
+
+.opcoes-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.opcao-btn {
+  width: 100%;
+  background: var(--surface);
+  border: 1.5px solid var(--borda);
+  border-radius: 10px;
+  padding: 14px 18px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--texto);
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.opcao-btn:hover:not(:disabled) {
+  border-color: var(--roxo);
+  background: var(--roxo-dim);
+}
+.opcao-btn:disabled { cursor: default; }
+.opcao-btn.correta  { background: var(--verde-dim); border-color: var(--verde); }
+.opcao-btn.errada   { background: var(--vermelho-dim); border-color: var(--vermelho); }
+
+.opcao-letra {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.opcao-btn.correta .opcao-letra { background: var(--verde); color: #fff; }
+.opcao-btn.errada  .opcao-letra { background: var(--vermelho); color: #fff; }
+
+/* Curiosidade */
+.curiosidade-box {
+  display: none;
+  background: var(--surface2);
+  border: 1px solid var(--borda);
+  border-left: 3px solid var(--roxo);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.curiosidade-titulo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--roxo-claro);
+  margin-bottom: 8px;
+}
+
+.btn-proxima {
+  width: 100%;
+  background: transparent;
+  border: 1.5px solid var(--roxo);
+  color: var(--roxo-claro);
+  border-radius: 10px;
+  padding: 13px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  display: none;
+  transition: all 0.15s;
+}
+.btn-proxima:hover { background: var(--roxo-dim); }
+
+/* Pontos animados */
+.pontos-flash {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--verde);
+  pointer-events: none;
+  opacity: 0;
+  z-index: 999;
+  animation: pontosUp 1.2s ease forwards;
+}
+@keyframes pontosUp {
+  0%   { opacity: 1; transform: translate(-50%, -50%); }
+  100% { opacity: 0; transform: translate(-50%, -120%); }
+}
+
+/* ── TELA DE RESULTADO ───────────────────────────── */
+#tela-resultado {
+  display: none;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+#tela-resultado::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(91,79,232,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.resultado-emoji {
+  font-size: 64px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.resultado-titulo {
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  color: var(--roxo-claro);
+}
+
+.resultado-faixa {
+  font-size: clamp(14px, 2vw, 16px);
+  color: var(--muted);
+  max-width: 440px;
+  line-height: 1.7;
+  margin-bottom: 32px;
+}
+
+.resultado-score-box {
+  background: var(--surface);
+  border: 1px solid var(--borda);
+  border-radius: 16px;
+  padding: 24px 40px;
+  margin-bottom: 32px;
+  display: inline-block;
+}
+.resultado-score-num {
+  font-size: 56px;
+  font-weight: 800;
+  color: var(--texto);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.resultado-score-label {
+  font-size: 12px;
+  color: var(--suave);
+  margin-top: 4px;
+}
+.resultado-score-max {
+  font-size: 14px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+
+.resultado-breakdown {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 32px;
+}
+.breakdown-item {
+  background: var(--surface);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 12px 20px;
+  min-width: 100px;
+}
+.breakdown-num { font-size: 22px; font-weight: 800; }
+.breakdown-label { font-size: 11px; color: var(--suave); margin-top: 2px; }
+
+.compartilhar-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+}
+
+.compartilhar-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+
+.btn-share {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 9px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  text-decoration: none;
+}
+.btn-share-whatsapp { background: #25D366; color: #fff; }
+.btn-share-whatsapp:hover { background: #1DA851; }
+.btn-share-linkedin { background: #0A66C2; color: #fff; }
+.btn-share-linkedin:hover { background: #084D92; }
+.btn-share-copiar   { background: var(--surface); color: var(--texto); border: 1.5px solid var(--borda); }
+.btn-share-copiar:hover   { border-color: var(--roxo); color: var(--roxo-claro); }
+
+/* Compartilhar: botão único no desktop, apps diretos no mobile */
+.btn-share-mobile { display: none; }
+@media (max-width: 600px) {
+  .btn-share-desktop { display: none; }
+  .btn-share-mobile  { display: inline-flex; }
+}
+
+.btn-jogar-novamente {
+  background: transparent;
+  border: 1.5px solid var(--borda);
+  color: var(--muted);
+  border-radius: 9px;
+  padding: 11px 24px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-jogar-novamente:hover { border-color: var(--roxo); color: var(--roxo-claro); }
+
+.beatstrap-credit {
+  position: absolute;
+  bottom: 20px;
+  font-size: 11px;
+  color: var(--suave);
+}
+.beatstrap-credit a { color: var(--roxo-claro); text-decoration: none; }
+
+/* ── DESAFIO 2 — LAYOUT DE DUAS COLUNAS (TELAS LARGAS) ──────
+   Ativado apenas quando .jogo-layout tem a classe .fase2-ativa
+   (aplicada via JS ao entrar na fase de múltipla escolha).
+   O Desafio 1 nunca recebe essa classe, então continua empilhado. */
+@media (min-width: 900px) {
+  .jogo-layout.fase2-ativa {
+    display: grid;
+    /* Cada coluna pode crescer até 720px — a mesma largura confortável
+       que a imagem e o conteúdo tinham no layout de uma coluna. */
+    grid-template-columns: minmax(320px, 720px) minmax(360px, 720px);
+    align-items: start;
+    gap: 32px;
+    max-width: 1520px; /* 720 + 720 + 32 (gap) + 48 (padding lateral) */
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 24px;
+  }
+  .jogo-layout.fase2-ativa .foto-section {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 24px 0 24px;
+  }
+  .jogo-layout.fase2-ativa .game-controls {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    padding: 24px 0;
+  }
+}
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 600px) {
+  .game-header { padding: 12px 16px; }
+  .game-progress-wrap { max-width: 140px; margin: 0 12px; }
+  .game-controls { padding: 16px; }
+  .foto-section { padding: 16px 16px 0; }
+  .ano-num { font-size: 52px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── TELA INICIAL ── -->
+<div id="tela-intro">
+  <div class="intro-badge">
+    <span class="intro-badge-dot"></span>
+    The Beatstrap
+  </div>
+  <h1 class="intro-title">
+    Tech<br><span>Time Machine</span>
+  </h1>
+  <p class="intro-sub" id="intro-sub-text"></p>
+
+  <div class="intro-stats">
+    <div class="intro-stat">
+      <div class="intro-stat-num" id="intro-num-rodadas">7</div>
+      <div class="intro-stat-label">Fotos históricas</div>
+    </div>
+    <div class="intro-stat">
+      <div class="intro-stat-num" id="intro-num-pts">7.000</div>
+      <div class="intro-stat-label">Pontos em jogo</div>
+    </div>
+    <div class="intro-stat">
+      <div class="intro-stat-num">2</div>
+      <div class="intro-stat-label">Desafios por foto</div>
+    </div>
+  </div>
+
+  <button class="btn-primary" onclick="iniciarJogo()">
+    Iniciar jogo →
+  </button>
+
+  <div class="intro-rodadas" id="intro-dots"></div>
+</div>
+
+<!-- ── TELA DE JOGO ── -->
+<div id="tela-jogo">
+  <div class="game-header">
+    <div class="game-logo">Tech<span> Time Machine</span></div>
+    <div class="game-progress-wrap">
+      <div class="game-progress-label">
+        <span id="progresso-label">Foto 1 de 8</span>
+        <span id="progresso-pct">0%</span>
+      </div>
+      <div class="game-progress-bar">
+        <div class="game-progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="game-score">
+      <div class="game-score-num" id="score-display">0</div>
+      <div class="game-score-label">pontos</div>
+    </div>
+  </div>
+
+  <div class="jogo-layout" id="jogo-layout">
+
+    <!-- Foto -->
+    <div class="foto-section">
+      <div class="foto-wrap">
+        <img class="foto-img" id="foto-img" src="" alt="">
+        <div class="foto-overlay"></div>
+        <div class="foto-rodada-badge" id="foto-badge">Foto 1 de 8</div>
+      </div>
+    </div>
+
+    <!-- Controles -->
+    <div class="game-controls">
+
+      <!-- FASE 1: Slider de ano -->
+      <div class="fase-slider" id="fase-slider">
+        <div class="fase-label">Desafio 1 — O ano</div>
+        <div class="fase-question">Em que ano esta foto foi tirada?</div>
+
+        <div class="ano-display">
+          <div class="ano-num" id="ano-display">-</div>
+        </div>
+
+        <div class="slider-wrap">
+          <input type="range" id="slider-ano"
+            min="1970" max="2026" value="1998" step="1"
+            oninput="atualizarAno(this.value)">
+          <div class="slider-labels">
+            <span id="slider-label-min">1970</span>
+            <span id="slider-label-max">2026</span>
+          </div>
+        </div>
+
+        <button class="btn-confirmar-ano" id="btn-confirmar-ano" onclick="confirmarAno()" disabled>
+          Selecione o ano
+        </button>
+
+        <div class="ano-feedback" id="ano-feedback">
+          <div class="ano-feedback-titulo" id="ano-feedback-titulo"></div>
+          <div class="ano-feedback-texto" id="ano-feedback-texto"></div>
+        </div>
+      </div>
+
+      <!-- FASE 2: Múltipla escolha -->
+      <div class="fase-multipla" id="fase-multipla">
+        <div class="ano-resumo" id="ano-resumo"></div>
+        <div class="fase-label">Desafio 2 — O fato</div>
+        <div class="fase-question" id="pergunta-texto"></div>
+
+        <div class="opcoes-grid" id="opcoes-grid"></div>
+
+        <div class="curiosidade-box" id="curiosidade-box">
+          <div class="curiosidade-titulo">Você sabia?</div>
+          <div id="curiosidade-texto"></div>
+        </div>
+
+        <button class="btn-proxima" id="btn-proxima" onclick="proximaRodada()">
+          Próxima foto →
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ── TELA DE RESULTADO ── -->
+<div id="tela-resultado">
+  <span class="resultado-emoji" id="resultado-emoji">🏆</span>
+  <div class="resultado-titulo" id="resultado-titulo"></div>
+  <div class="resultado-faixa" id="resultado-faixa"></div>
+
+  <div class="resultado-score-box">
+    <div class="resultado-score-num" id="resultado-score">0</div>
+    <div class="resultado-score-label">pontos totais</div>
+    <div class="resultado-score-max" id="resultado-max"></div>
+  </div>
+
+  <div class="resultado-breakdown">
+    <div class="breakdown-item">
+      <div class="breakdown-num" id="bd-pontos-ano" style="color:var(--verde)">0</div>
+      <div class="breakdown-label">Pontos no Ano</div>
+    </div>
+    <div class="breakdown-item">
+      <div class="breakdown-num" id="bd-pontos-multipla" style="color:var(--roxo-claro)">0</div>
+      <div class="breakdown-label">Pontos no Fato</div>
+    </div>
+  </div>
+
+  <div class="compartilhar-titulo">Compartilhe seu resultado</div>
+  <div class="compartilhar-btns">
+    <!-- Desktop: botão único que copia o texto de compartilhamento -->
+    <button class="btn-share btn-share-copiar btn-share-desktop" id="btn-compartilhar-desktop" onclick="compartilharResultado()">
+      🔗 Compartilhar resultados
+    </button>
+    <!-- Mobile: botões diretos para os apps -->
+    <button class="btn-share btn-share-whatsapp btn-share-mobile" onclick="compartilharWhatsApp()">
+      📱 WhatsApp
+    </button>
+    <button class="btn-share btn-share-linkedin btn-share-mobile" onclick="compartilharLinkedIn()">
+      in LinkedIn
+    </button>
+  </div>
+
+  <button class="btn-jogar-novamente" onclick="reiniciarJogo()">
+    ↺ Jogar novamente
+  </button>
+
+  <div class="beatstrap-credit">
+    Uma produção <a href="https://the.beatstrap.com.br" target="_blank">The Beatstrap</a>
+  </div>
+</div>
+
+<script src="config-quiz.js"></script>
+<script>
+const { identidade, cores, config, rodadas, resultado, sliderConfig } = window.QUIZ;
+
+// ── ESTADO ──────────────────────────────────────────
+let rodadaAtual    = 0;
+let scoreTotal     = 0;
+let faseAtual      = 'slider'; // 'slider' | 'multipla'
+let anoEscolhido   = 0;
+let anoInteragido  = false; // true assim que o jogador mover o slider na rodada atual
+let pontosAno      = 0; // soma dos pontos do Desafio 1 (ano) em todas as rodadas
+let pontosMultipla = 0; // soma dos pontos do Desafio 2 (múltipla escolha) em todas as rodadas
+
+// ── INICIALIZAÇÃO ────────────────────────────────────
+document.getElementById('intro-sub-text').textContent = identidade.subtitulo;
+document.getElementById('intro-num-rodadas').textContent = rodadas.length;
+document.getElementById('intro-num-pts').textContent =
+  (rodadas.length * config.pontuacaoMaxRodada).toLocaleString('pt-BR');
+
+// Dots
+const dotsWrap = document.getElementById('intro-dots');
+rodadas.forEach(() => {
+  const d = document.createElement('div');
+  d.className = 'intro-rodada-dot';
+  dotsWrap.appendChild(d);
+});
+
+// ── INICIAR JOGO ────────────────────────────────────
+function iniciarJogo() {
+  rodadaAtual = 0;
+  scoreTotal  = 0;
+  pontosAno      = 0;
+  pontosMultipla = 0;
+  document.getElementById('score-display').textContent = '0';
+  document.getElementById('tela-intro').style.display = 'none';
+  document.getElementById('tela-jogo').style.display  = 'flex';
+  carregarRodada();
+}
+
+// ── CARREGAR RODADA ─────────────────────────────────
+function carregarRodada() {
+  const r = rodadas[rodadaAtual];
+  faseAtual = 'slider';
+
+  // Header
+  const pct = Math.round((rodadaAtual / rodadas.length) * 100);
+  document.getElementById('progresso-label').textContent =
+    `Foto ${rodadaAtual + 1} de ${rodadas.length}`;
+  document.getElementById('progresso-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('foto-badge').textContent =
+    `Foto ${rodadaAtual + 1} de ${rodadas.length}`;
+
+  // Foto
+  document.getElementById('foto-img').src = r.imagem;
+  document.getElementById('foto-img').alt = r.imagemAlt;
+
+  // Slider (range fixo e igual para todas as rodadas)
+  // A alça inicia no centro matemático exato do range, mas isso NÃO é um
+  // valor confirmado — o display mostra "-" e o botão de confirmar fica
+  // desabilitado até o jogador efetivamente interagir com o slider
+  // (ver atualizarAno()).
+  anoInteragido = false;
+  const centroRange = Math.round((sliderConfig.min + sliderConfig.max) / 2);
+  const slider = document.getElementById('slider-ano');
+  slider.min   = sliderConfig.min;
+  slider.max   = sliderConfig.max;
+  slider.value = centroRange;
+  document.getElementById('slider-label-min').textContent = sliderConfig.min;
+  document.getElementById('slider-label-max').textContent = sliderConfig.max;
+  document.getElementById('ano-display').textContent = '-';
+
+  // Reset fases
+  document.getElementById('fase-slider').style.display   = 'block';
+  document.getElementById('fase-multipla').style.display = 'none';
+  document.getElementById('ano-feedback').style.display  = 'none';
+  document.getElementById('ano-feedback').className      = 'ano-feedback';
+  const btnConfirmar = document.getElementById('btn-confirmar-ano');
+  btnConfirmar.textContent   = 'Selecione o ano';
+  btnConfirmar.style.display = 'block';
+  btnConfirmar.disabled      = true;
+
+  // Desafio 1 sempre no layout empilhado (imagem em cima, controles embaixo)
+  document.getElementById('jogo-layout').classList.remove('fase2-ativa');
+
+  // Scroll top
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── SLIDER ──────────────────────────────────────────
+function atualizarAno(val) {
+  anoInteragido = true;
+  document.getElementById('ano-display').textContent = val;
+  const btnConfirmar = document.getElementById('btn-confirmar-ano');
+  btnConfirmar.textContent = `Confirmar: ${val} →`;
+  btnConfirmar.disabled    = false;
+}
+
+// Pontuação por faixa de distância entre o ano escolhido e o ano correto.
+// diff é sempre Math.abs() — chutar 10 anos antes ou 10 anos depois do
+// ano certo rende exatamente a mesma pontuação (simetria nos dois sentidos),
+// e quanto maior a distância, menor a pontuação (proporcional por faixas,
+// nunca um acerto binário de certo/errado).
+function calcularPontuacaoAno(diff) {
+  if (diff === 0)  return config.pontuacaoAnoExato;
+  if (diff <= 1)   return config.pontuacaoAno1ano;
+  if (diff <= 2)   return config.pontuacaoAno2anos;
+  if (diff <= 5)   return config.pontuacaoAno5anos;
+  if (diff <= 10)  return config.pontuacaoAno10anos;
+  return config.pontuacaoAnoErrou;
+}
+
+// ── CONFIRMAR ANO ───────────────────────────────────
+function confirmarAno() {
+  // Trava defensiva: sem interação do jogador com o slider, o valor
+  // exibido é só a posição inicial da alça, não uma resposta válida.
+  if (!anoInteragido) return;
+
+  const r = rodadas[rodadaAtual];
+  anoEscolhido = parseInt(document.getElementById('slider-ano').value);
+  const diff   = Math.abs(anoEscolhido - r.ano); // distância absoluta — simétrica para os dois sentidos
+
+  const pontos = calcularPontuacaoAno(diff);
+  let feedbackTitulo = '';
+  let feedbackTexto  = '';
+  let feedbackClasse = 'erro';
+
+  if (diff === 0) {
+    feedbackTitulo = '🎯 Acertou o ano exato!';
+    feedbackClasse = 'acerto';
+  } else if (diff <= 1) {
+    feedbackTitulo = '⚡ Quase perfeito! 1 ano de diferença.';
+    feedbackClasse = 'acerto';
+  } else if (diff <= 2) {
+    feedbackTitulo = `👏 Muito perto! ${diff} anos de diferença.`;
+    feedbackClasse = 'acerto';
+  } else if (diff <= 5) {
+    feedbackTitulo = `🙂 Chegou perto. ${diff} anos de diferença.`;
+    feedbackClasse = 'erro';
+  } else if (diff <= 10) {
+    feedbackTitulo = `😅 ${diff} anos de diferença. O ano certo era ${r.ano}.`;
+    feedbackClasse = 'erro';
+  } else {
+    feedbackTitulo = `❌ O ano certo era ${r.ano}. Diferença de ${diff} anos.`;
+    feedbackClasse = 'erro';
+  }
+
+  feedbackTexto = `Você escolheu ${anoEscolhido} · Ano correto: ${r.ano} · +${pontos} pontos`;
+
+  // Atualiza score
+  scoreTotal += pontos;
+  pontosAno  += pontos;
+  document.getElementById('score-display').textContent =
+    scoreTotal.toLocaleString('pt-BR');
+
+  // Animação de pontos
+  if (pontos > 0) flashPontos('+' + pontos);
+
+  // Mostra feedback
+  const fb = document.getElementById('ano-feedback');
+  fb.className = 'ano-feedback ' + feedbackClasse;
+  fb.style.display = 'block';
+  document.getElementById('ano-feedback-titulo').textContent = feedbackTitulo;
+  document.getElementById('ano-feedback-texto').textContent  = feedbackTexto;
+  document.getElementById('btn-confirmar-ano').style.display = 'none';
+
+  // Avança para fase 2 após 1.5s
+  setTimeout(() => {
+    document.getElementById('fase-slider').style.display   = 'none';
+    document.getElementById('fase-multipla').style.display = 'block';
+    document.getElementById('jogo-layout').classList.add('fase2-ativa');
+    carregarMultipla();
+  }, 1500);
+}
+
+// ── MÚLTIPLA ESCOLHA ────────────────────────────────
+function carregarMultipla() {
+  const r = rodadas[rodadaAtual];
+  document.getElementById('ano-resumo').textContent = `Você escolheu o ano ${anoEscolhido}`;
+  document.getElementById('pergunta-texto').textContent = r.pergunta;
+  document.getElementById('curiosidade-box').style.display = 'none';
+  document.getElementById('btn-proxima').style.display     = 'none';
+
+  const grid = document.getElementById('opcoes-grid');
+  grid.innerHTML = '';
+  const letras = ['A', 'B', 'C', 'D'];
+
+  r.opcoes.forEach((opcao, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opcao-btn';
+    btn.innerHTML = `
+      <span class="opcao-letra">${letras[i]}</span>
+      <span>${opcao}</span>`;
+    btn.onclick = () => responderMultipla(i, btn, r);
+    grid.appendChild(btn);
+  });
+}
+
+function responderMultipla(idx, btnClicado, r) {
+  // Desabilita todos os botões
+  document.querySelectorAll('.opcao-btn').forEach(b => b.disabled = true);
+
+  const acertou = idx === r.correta;
+  let pontos = 0;
+
+  if (acertou) {
+    btnClicado.classList.add('correta');
+    pontos = config.pontuacaoMultipla;
+  } else {
+    btnClicado.classList.add('errada');
+    // Mostra a correta
+    document.querySelectorAll('.opcao-btn')[r.correta].classList.add('correta');
+  }
+
+  // Atualiza score
+  scoreTotal     += pontos;
+  pontosMultipla += pontos;
+  document.getElementById('score-display').textContent =
+    scoreTotal.toLocaleString('pt-BR');
+
+  if (pontos > 0) flashPontos('+' + pontos);
+
+  // Curiosidade
+  document.getElementById('curiosidade-texto').textContent = r.curiosidade;
+  document.getElementById('curiosidade-box').style.display = 'block';
+
+  // Botão próxima
+  const btnProx = document.getElementById('btn-proxima');
+  btnProx.textContent = rodadaAtual < rodadas.length - 1
+    ? 'Próxima foto →'
+    : 'Ver resultado →';
+  btnProx.style.display = 'block';
+}
+
+// ── PRÓXIMA RODADA ───────────────────────────────────
+function proximaRodada() {
+  rodadaAtual++;
+  if (rodadaAtual < rodadas.length) {
+    carregarRodada();
+  } else {
+    mostrarResultado();
+  }
+}
+
+// ── RESULTADO ────────────────────────────────────────
+function mostrarResultado() {
+  document.getElementById('tela-jogo').style.display      = 'none';
+  document.getElementById('tela-resultado').style.display = 'flex';
+
+  const maxPontos = rodadas.length * config.pontuacaoMaxRodada;
+
+  // Faixa
+  const faixa = resultado.faixas.find(f =>
+    scoreTotal >= f.minPontos && scoreTotal <= f.maxPontos
+  ) || resultado.faixas[resultado.faixas.length - 1];
+
+  document.getElementById('resultado-emoji').textContent  = faixa.emoji;
+  document.getElementById('resultado-titulo').textContent = faixa.titulo;
+  document.getElementById('resultado-faixa').textContent  = faixa.descricao;
+
+  // Score
+  document.getElementById('resultado-score').textContent =
+    scoreTotal.toLocaleString('pt-BR');
+  document.getElementById('resultado-max').textContent =
+    `de ${maxPontos.toLocaleString('pt-BR')} pontos possíveis`;
+
+  // Breakdown — pontuação total acumulada em cada categoria
+  document.getElementById('bd-pontos-ano').textContent =
+    pontosAno.toLocaleString('pt-BR');
+  document.getElementById('bd-pontos-multipla').textContent =
+    pontosMultipla.toLocaleString('pt-BR');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── COMPARTILHAR ─────────────────────────────────────
+function getTextoCompartilhamento() {
+  const faixa = resultado.faixas.find(f =>
+    scoreTotal >= f.minPontos && scoreTotal <= f.maxPontos
+  ) || resultado.faixas[resultado.faixas.length - 1];
+  return resultado.compartilharTexto(
+    scoreTotal.toLocaleString('pt-BR'),
+    (rodadas.length * config.pontuacaoMaxRodada).toLocaleString('pt-BR'),
+    faixa.titulo
+  );
+}
+
+function compartilharWhatsApp() {
+  const texto = encodeURIComponent(
+    getTextoCompartilhamento() + '\n' + resultado.compartilharUrl
+  );
+  window.open(`https://wa.me/?text=${texto}`, '_blank');
+}
+
+function compartilharLinkedIn() {
+  const url = encodeURIComponent(resultado.compartilharUrl);
+  window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank');
+}
+
+// Desktop: botão único — copia o texto de compartilhamento e avisa o
+// jogador que já pode colar em qualquer lugar (WhatsApp, e-mail, etc.)
+function compartilharResultado() {
+  const texto = getTextoCompartilhamento() + '\n' + resultado.compartilharUrl;
+  const btn = document.getElementById('btn-compartilhar-desktop');
+  const textoOriginal = btn.textContent;
+
+  const avisarCopiado = () => {
+    btn.textContent = '✓ Copiado! Cole onde quiser compartilhar';
+    setTimeout(() => { btn.textContent = textoOriginal; }, 3000);
+  };
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(texto).then(avisarCopiado).catch(() => {
+      prompt('Copie o texto abaixo para compartilhar:', texto);
+    });
+  } else {
+    prompt('Copie o texto abaixo para compartilhar:', texto);
+  }
+}
+
+// ── REINICIAR ─────────────────────────────────────────
+function reiniciarJogo() {
+  document.getElementById('tela-resultado').style.display = 'none';
+  document.getElementById('tela-intro').style.display     = 'flex';
+}
+
+// ── UTILITÁRIOS ───────────────────────────────────────
+function flashPontos(texto) {
+  const el = document.createElement('div');
+  el.className = 'pontos-flash';
+  el.textContent = texto;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+}
+</script>
+
+</body>
+</html>
