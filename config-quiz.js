@@ -269,7 +269,7 @@ const resultado = {
   compartilharTexto: (pontos, total, faixa) =>
     `Fiz ${pontos} de ${total} pontos no Tech Time Machine da @Beatstrap e fui classificado como "${faixa}"! Você consegue mais? 🚀`,
 
-  compartilharUrl: "https://quiz.beatstrap.com.br",
+  compartilharUrl: "https://techtimemachine.beatstrap.com.br/",
 };
 
 
