@@ -270,11 +270,21 @@ const resultado = {
     },
   ],
 
-  // Formata a linha de detalhamento de uma rodada — usada tanto na tela
-  // de resultado quanto no texto de compartilhamento, para manter os
-  // dois lugares sempre consistentes entre si.
-  linhaDetalhamento: (numero, ano, pontosObtidos, pontosMax, acertouPergunta) =>
-    `Foto ${numero}: ${ano} - ${pontosObtidos} / ${pontosMax} pontos | Pergunta: ${acertouPergunta ? 'Certo' : 'Errado'}`,
+  // Medalha do Desafio 1 (ano) para a rodada, calculada a partir da
+  // pontuação obtida naquele desafio especificamente (não da rodada toda).
+  medalhaAno: (pontosAno) => {
+    if (pontosAno === 500) return '🥇';
+    if (pontosAno >= 250)  return '🥈';
+    if (pontosAno >= 50)   return '🥉';
+    return '➖';
+  },
+
+  // Formata a linha de detalhamento de uma rodada para o texto de
+  // compartilhamento (WhatsApp, LinkedIn, X, copiar link).
+  linhaDetalhamento: function (numero, pontosAno, pontosObtidos, pontosMax, acertouPergunta) {
+    const medalha = this.medalhaAno(pontosAno);
+    return `Imagem ${numero}: ${pontosObtidos} / ${pontosMax} ${medalha}    - Pergunta: ${acertouPergunta ? '✅' : '❌'}`;
+  },
 
   // Texto para compartilhamento nas redes
   compartilharTexto: (pontos, total, faixa, linhasDetalhamento) =>
