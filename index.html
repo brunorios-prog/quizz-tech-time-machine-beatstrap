@@ -807,7 +807,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   <div class="intro-stats">
     <div class="intro-stat">
       <div class="intro-stat-num" id="intro-num-rodadas">7</div>
-      <div class="intro-stat-label">Fotos históricas</div>
+      <div class="intro-stat-label">Imagens históricas</div>
     </div>
     <div class="intro-stat">
       <div class="intro-stat-num" id="intro-num-pts">7.000</div>
@@ -815,7 +815,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     </div>
     <div class="intro-stat">
       <div class="intro-stat-num">2</div>
-      <div class="intro-stat-label">Desafios por foto</div>
+      <div class="intro-stat-label">Desafios por imagem</div>
     </div>
   </div>
 
@@ -832,7 +832,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
     <div class="game-logo">Tech<span> Time Machine</span></div>
     <div class="game-progress-wrap">
       <div class="game-progress-label">
-        <span id="progresso-label">Foto 1 de 8</span>
+        <span id="progresso-label">Imagem 1 de 8</span>
         <span id="progresso-pct">0%</span>
       </div>
       <div class="game-progress-bar">
@@ -852,7 +852,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
       <div class="foto-wrap">
         <img class="foto-img" id="foto-img" src="" alt="">
         <div class="foto-overlay"></div>
-        <div class="foto-rodada-badge" id="foto-badge">Foto 1 de 8</div>
+        <div class="foto-rodada-badge" id="foto-badge">Imagem 1 de 8</div>
       </div>
     </div>
 
@@ -862,7 +862,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
       <!-- FASE 1: Slider de ano -->
       <div class="fase-slider" id="fase-slider">
         <div class="fase-label">Desafio 1 — O ano</div>
-        <div class="fase-question">Em que ano esta foto foi tirada?</div>
+        <div class="fase-question">Em que ano esta imagem foi tirada?</div>
 
         <div class="ano-display">
           <div class="ano-num" id="ano-display">-</div>
@@ -910,7 +910,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
         </div>
 
         <button class="btn-proxima" id="btn-proxima" onclick="proximaRodada()">
-          Próxima foto →
+          Próxima imagem →
         </button>
       </div>
 
@@ -1032,11 +1032,11 @@ function carregarRodada() {
   // Header
   const pct = Math.round((rodadaAtual / rodadas.length) * 100);
   document.getElementById('progresso-label').textContent =
-    `Foto ${rodadaAtual + 1} de ${rodadas.length}`;
+    `Imagem ${rodadaAtual + 1} de ${rodadas.length}`;
   document.getElementById('progresso-pct').textContent = pct + '%';
   document.getElementById('progress-fill').style.width = pct + '%';
   document.getElementById('foto-badge').textContent =
-    `Foto ${rodadaAtual + 1} de ${rodadas.length}`;
+    `Imagem ${rodadaAtual + 1} de ${rodadas.length}`;
 
   // Foto
   document.getElementById('foto-img').src = r.imagem;
@@ -1167,13 +1167,22 @@ function carregarMultipla() {
   grid.innerHTML = '';
   const letras = ['A', 'B', 'C', 'D'];
 
-  r.opcoes.forEach((opcao, i) => {
+  // Embaralha a ordem de apresentação das alternativas a cada exibição da
+  // rodada, mas guarda o índice original de cada uma (indiceOriginal) —
+  // é esse índice, não a posição na tela, que é comparado com r.correta
+  // para validar a resposta e destacar a alternativa certa depois.
+  const opcoesEmbaralhadas = embaralhar(
+    r.opcoes.map((opcao, indiceOriginal) => ({ opcao, indiceOriginal }))
+  );
+
+  opcoesEmbaralhadas.forEach((item, posicao) => {
     const btn = document.createElement('button');
     btn.className = 'opcao-btn';
+    btn.dataset.indiceOriginal = item.indiceOriginal;
     btn.innerHTML = `
-      <span class="opcao-letra">${letras[i]}</span>
-      <span>${opcao}</span>`;
-    btn.onclick = () => responderMultipla(i, btn, r);
+      <span class="opcao-letra">${letras[posicao]}</span>
+      <span>${item.opcao}</span>`;
+    btn.onclick = () => responderMultipla(item.indiceOriginal, btn, r);
     grid.appendChild(btn);
   });
 }
@@ -1190,8 +1199,10 @@ function responderMultipla(idx, btnClicado, r) {
     pontos = config.pontuacaoMultipla;
   } else {
     btnClicado.classList.add('errada');
-    // Mostra a correta
-    document.querySelectorAll('.opcao-btn')[r.correta].classList.add('correta');
+    // Mostra a correta — busca pelo índice original guardado no botão,
+    // já que a posição na tela não corresponde mais a r.correta depois
+    // do embaralhamento.
+    document.querySelector(`.opcao-btn[data-indice-original="${r.correta}"]`).classList.add('correta');
   }
 
   // Atualiza score
@@ -1220,7 +1231,7 @@ function responderMultipla(idx, btnClicado, r) {
   // Botão próxima
   const btnProx = document.getElementById('btn-proxima');
   btnProx.textContent = rodadaAtual < rodadas.length - 1
-    ? 'Próxima foto →'
+    ? 'Próxima imagem →'
     : 'Ver resultado →';
   btnProx.style.display = 'block';
 
@@ -1285,7 +1296,7 @@ function mostrarResultado() {
     const div = document.createElement('div');
     div.className = 'detalhamento-item';
     div.innerHTML = `
-      <span>Foto ${item.numero}: ${item.ano} - ${pontosObtidos} / ${config.pontuacaoMaxRodada} pontos</span>
+      <span>Imagem ${item.numero}: ${item.ano} - ${pontosObtidos} / ${config.pontuacaoMaxRodada} pontos</span>
       <span class="detalhamento-item-pergunta" style="color:${item.acertouMultipla ? 'var(--verde)' : 'var(--vermelho)'}">
         Pergunta:
         <span class="detalhamento-item-icone">${item.acertouMultipla ? ICONE_CERTO : ICONE_ERRADO}</span>
@@ -1383,6 +1394,16 @@ function flashPontos(texto) {
   el.textContent = texto;
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 1200);
+}
+
+// Fisher-Yates — embaralha uma cópia do array recebido sem alterar o original
+function embaralhar(array) {
+  const arr = array.slice();
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
 }
 </script>
 

@@ -13,7 +13,7 @@
 const identidade = {
   nomeProduto:  "Tech Time Machine",
   tagline:      "Você sabe quando a tecnologia mudou o mundo?",
-  subtitulo:    "10 fotos. 10 momentos históricos. Descubra o ano e acerte o fato — teste seu conhecimento sobre os marcos que moldaram a tecnologia e o empreendedorismo global.",
+  subtitulo:    "10 imagens. 10 momentos históricos. Descubra o ano e acerte o fato — teste seu conhecimento sobre os marcos que moldaram a tecnologia e o empreendedorismo global.",
   rodape:       "Um produto The Beatstrap · Todos os direitos reservados",
   totalRodadas: 8,
 };
@@ -103,7 +103,7 @@ const rodadas = [
     imagemAlt:   "Steve Jobs e John Sculley no lançamento do Macintosh em 1984",
     ano:         1984,
 
-    pergunta:    "Quem é o homem ao lado de Steve Jobs nesta foto?",
+    pergunta:    "Quem é o homem ao lado de Steve Jobs nesta imagem?",
     opcoes: [
       "Steve Wozniak, cofundador da Apple",
       "John Sculley, CEO da Apple na época",
@@ -119,7 +119,7 @@ const rodadas = [
   {
     id: 3,
     imagem:      "Imagens/microsoft-1981.webp",
-    imagemAlt:   "Paul Allen e Bill Gates jovens, rodeados de computadores, na foto oficial da Microsoft de 1981",
+    imagemAlt:   "Paul Allen e Bill Gates jovens, rodeados de computadores, na imagem oficial da Microsoft de 1981",
     ano:         1981,
 
     pergunta:    "O que a Microsoft havia acabado de licenciar para a IBM neste ano?",
@@ -217,7 +217,7 @@ const rodadas = [
     imagemAlt:   "Jawed Karim em frente ao recinto dos elefantes no San Diego Zoo, cena do vídeo Me at the zoo",
     ano:         2005,
 
-    pergunta:    "Do que se trata esta foto histórica?",
+    pergunta:    "Do que se trata esta imagem histórica?",
     opcoes: [
       "Um vlog viral que antecedeu o TikTok",
       "O primeiro vídeo já publicado no YouTube",
