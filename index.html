@@ -351,20 +351,37 @@ input[type="range"]::-webkit-slider-thumb:hover {
   opacity: 0.6;
 }
 
-/* Feedback do ano */
-.ano-feedback {
+/* Feedback de pontuação — usado no Desafio 1 (ano) e no Desafio 2 (múltipla) */
+.feedback-pontuacao {
   display: none;
   border-radius: 10px;
   padding: 16px 20px;
   margin-top: 16px;
   border: 1px solid;
 }
-.ano-feedback.acerto  { background: var(--verde-dim); border-color: var(--verde); }
-.ano-feedback.erro    { background: var(--vermelho-dim); border-color: var(--vermelho); }
-.ano-feedback-titulo  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-.ano-feedback.acerto .ano-feedback-titulo { color: var(--verde); }
-.ano-feedback.erro .ano-feedback-titulo   { color: var(--vermelho); }
-.ano-feedback-texto   { font-size: 13px; color: var(--muted); }
+.feedback-pontuacao.acerto  { background: var(--verde-dim); border-color: var(--verde); }
+.feedback-pontuacao.erro    { background: var(--vermelho-dim); border-color: var(--vermelho); }
+.feedback-pontuacao-titulo  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.feedback-pontuacao.acerto .feedback-pontuacao-titulo { color: var(--verde); }
+.feedback-pontuacao.erro .feedback-pontuacao-titulo   { color: var(--vermelho); }
+.feedback-pontuacao-texto   { font-size: 13px; color: var(--muted); }
+
+.btn-continuar-desafio2 {
+  width: 100%;
+  background: transparent;
+  border: 1.5px solid var(--roxo);
+  color: var(--roxo-claro);
+  border-radius: 10px;
+  padding: 13px;
+  font-family: 'Manrope', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 16px;
+  display: none;
+  transition: all 0.15s;
+}
+.btn-continuar-desafio2:hover { background: var(--roxo-dim); }
 
 /* Fase 2 — Múltipla escolha */
 .fase-multipla { display: none; }
@@ -510,10 +527,12 @@ input[type="range"]::-webkit-slider-thumb:hover {
 }
 
 .resultado-emoji {
-  font-size: 64px;
   margin-bottom: 16px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  color: var(--roxo-claro);
 }
+.resultado-emoji svg { width: 64px; height: 64px; }
 
 .resultado-titulo {
   font-size: clamp(24px, 4vw, 36px);
@@ -574,6 +593,50 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .breakdown-num { font-size: 22px; font-weight: 800; }
 .breakdown-label { font-size: 11px; color: var(--suave); margin-top: 2px; }
 
+/* Detalhamento por rodada */
+.resultado-detalhamento {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 0 32px;
+}
+.detalhamento-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 14px;
+  text-align: center;
+}
+.detalhamento-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.detalhamento-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--texto);
+  text-align: left;
+}
+.detalhamento-item-pergunta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  font-size: 12px;
+  color: var(--suave);
+}
+.detalhamento-item-icone { display: inline-flex; align-items: center; }
+.detalhamento-item-icone svg { width: 16px; height: 16px; }
+
 .compartilhar-titulo {
   font-size: 13px;
   font-weight: 700;
@@ -611,6 +674,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .btn-share-linkedin:hover { background: #084D92; }
 .btn-share-copiar   { background: var(--surface); color: var(--texto); border: 1.5px solid var(--borda); }
 .btn-share-copiar:hover   { border-color: var(--roxo); color: var(--roxo-claro); }
+.btn-share svg { width: 15px; height: 15px; flex-shrink: 0; }
 
 /* Compartilhar: botão único no desktop, apps diretos no mobile */
 .btn-share-mobile { display: none; }
@@ -773,10 +837,14 @@ input[type="range"]::-webkit-slider-thumb:hover {
           Selecione o ano
         </button>
 
-        <div class="ano-feedback" id="ano-feedback">
-          <div class="ano-feedback-titulo" id="ano-feedback-titulo"></div>
-          <div class="ano-feedback-texto" id="ano-feedback-texto"></div>
+        <div class="feedback-pontuacao" id="ano-feedback">
+          <div class="feedback-pontuacao-titulo" id="ano-feedback-titulo"></div>
+          <div class="feedback-pontuacao-texto" id="ano-feedback-texto"></div>
         </div>
+
+        <button class="btn-continuar-desafio2" id="btn-continuar-desafio2" onclick="continuarDesafio2()">
+          Continuar para o Desafio 2 →
+        </button>
       </div>
 
       <!-- FASE 2: Múltipla escolha -->
@@ -786,6 +854,10 @@ input[type="range"]::-webkit-slider-thumb:hover {
         <div class="fase-question" id="pergunta-texto"></div>
 
         <div class="opcoes-grid" id="opcoes-grid"></div>
+
+        <div class="feedback-pontuacao" id="multipla-feedback">
+          <div class="feedback-pontuacao-titulo" id="multipla-feedback-titulo"></div>
+        </div>
 
         <div class="curiosidade-box" id="curiosidade-box">
           <div class="curiosidade-titulo">Você sabia?</div>
@@ -803,7 +875,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
 
 <!-- ── TELA DE RESULTADO ── -->
 <div id="tela-resultado">
-  <span class="resultado-emoji" id="resultado-emoji">🏆</span>
+  <span class="resultado-emoji" id="resultado-emoji"></span>
   <div class="resultado-titulo" id="resultado-titulo"></div>
   <div class="resultado-faixa" id="resultado-faixa"></div>
 
@@ -824,23 +896,31 @@ input[type="range"]::-webkit-slider-thumb:hover {
     </div>
   </div>
 
+  <div class="resultado-detalhamento">
+    <div class="detalhamento-titulo">Detalhamento por rodada</div>
+    <div class="detalhamento-lista" id="detalhamento-lista"></div>
+  </div>
+
   <div class="compartilhar-titulo">Compartilhe seu resultado</div>
   <div class="compartilhar-btns">
     <!-- Desktop: botão único que copia o texto de compartilhamento -->
     <button class="btn-share btn-share-copiar btn-share-desktop" id="btn-compartilhar-desktop" onclick="compartilharResultado()">
-      🔗 Compartilhar resultados
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07l-1.5 1.5"></path><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.5-1.5"></path></svg>
+      Compartilhar resultados
     </button>
     <!-- Mobile: botões diretos para os apps -->
     <button class="btn-share btn-share-whatsapp btn-share-mobile" onclick="compartilharWhatsApp()">
-      📱 WhatsApp
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+      WhatsApp
     </button>
     <button class="btn-share btn-share-linkedin btn-share-mobile" onclick="compartilharLinkedIn()">
-      in LinkedIn
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+      LinkedIn
     </button>
   </div>
 
   <button class="btn-jogar-novamente" onclick="reiniciarJogo()">
-    ↺ Jogar novamente
+    Jogar novamente
   </button>
 
   <div class="beatstrap-credit">
@@ -860,6 +940,10 @@ let anoEscolhido   = 0;
 let anoInteragido  = false; // true assim que o jogador mover o slider na rodada atual
 let pontosAno      = 0; // soma dos pontos do Desafio 1 (ano) em todas as rodadas
 let pontosMultipla = 0; // soma dos pontos do Desafio 2 (múltipla escolha) em todas as rodadas
+let rodadasResultado = []; // detalhamento por rodada, usado na tela final e no compartilhamento
+
+const ICONE_CERTO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+const ICONE_ERRADO = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>';
 
 // ── INICIALIZAÇÃO ────────────────────────────────────
 document.getElementById('intro-sub-text').textContent = identidade.subtitulo;
@@ -881,6 +965,7 @@ function iniciarJogo() {
   scoreTotal  = 0;
   pontosAno      = 0;
   pontosMultipla = 0;
+  rodadasResultado = [];
   document.getElementById('score-display').textContent = '0';
   document.getElementById('tela-intro').style.display = 'none';
   document.getElementById('tela-jogo').style.display  = 'flex';
@@ -924,11 +1009,12 @@ function carregarRodada() {
   document.getElementById('fase-slider').style.display   = 'block';
   document.getElementById('fase-multipla').style.display = 'none';
   document.getElementById('ano-feedback').style.display  = 'none';
-  document.getElementById('ano-feedback').className      = 'ano-feedback';
+  document.getElementById('ano-feedback').className      = 'feedback-pontuacao';
   const btnConfirmar = document.getElementById('btn-confirmar-ano');
   btnConfirmar.textContent   = 'Selecione o ano';
   btnConfirmar.style.display = 'block';
   btnConfirmar.disabled      = true;
+  document.getElementById('btn-continuar-desafio2').style.display = 'none';
 
   // Desafio 1 sempre no layout empilhado (imagem em cima, controles embaixo)
   document.getElementById('jogo-layout').classList.remove('fase2-ativa');
@@ -970,32 +1056,8 @@ function confirmarAno() {
   anoEscolhido = parseInt(document.getElementById('slider-ano').value);
   const diff   = Math.abs(anoEscolhido - r.ano); // distância absoluta — simétrica para os dois sentidos
 
-  const pontos = calcularPontuacaoAno(diff);
-  let feedbackTitulo = '';
-  let feedbackTexto  = '';
-  let feedbackClasse = 'erro';
-
-  if (diff === 0) {
-    feedbackTitulo = '🎯 Acertou o ano exato!';
-    feedbackClasse = 'acerto';
-  } else if (diff <= 1) {
-    feedbackTitulo = '⚡ Quase perfeito! 1 ano de diferença.';
-    feedbackClasse = 'acerto';
-  } else if (diff <= 2) {
-    feedbackTitulo = `👏 Muito perto! ${diff} anos de diferença.`;
-    feedbackClasse = 'acerto';
-  } else if (diff <= 5) {
-    feedbackTitulo = `🙂 Chegou perto. ${diff} anos de diferença.`;
-    feedbackClasse = 'erro';
-  } else if (diff <= 10) {
-    feedbackTitulo = `😅 ${diff} anos de diferença. O ano certo era ${r.ano}.`;
-    feedbackClasse = 'erro';
-  } else {
-    feedbackTitulo = `❌ O ano certo era ${r.ano}. Diferença de ${diff} anos.`;
-    feedbackClasse = 'erro';
-  }
-
-  feedbackTexto = `Você escolheu ${anoEscolhido} · Ano correto: ${r.ano} · +${pontos} pontos`;
+  const pontos       = calcularPontuacaoAno(diff);
+  const pontosMaxAno = config.pontuacaoAnoExato;
 
   // Atualiza score
   scoreTotal += pontos;
@@ -1003,24 +1065,37 @@ function confirmarAno() {
   document.getElementById('score-display').textContent =
     scoreTotal.toLocaleString('pt-BR');
 
+  // Registra o resultado desta rodada (a parte da múltipla é completada
+  // depois, em responderMultipla())
+  rodadasResultado[rodadaAtual] = {
+    numero: rodadaAtual + 1,
+    ano: r.ano,
+    pontosAno: pontos,
+    pontosMultipla: 0,
+    acertouMultipla: false,
+  };
+
   // Animação de pontos
   if (pontos > 0) flashPontos('+' + pontos);
 
-  // Mostra feedback
+  // Mostra feedback objetivo: ano correto e pontuação obtida sobre a máxima
   const fb = document.getElementById('ano-feedback');
-  fb.className = 'ano-feedback ' + feedbackClasse;
+  fb.className = 'feedback-pontuacao ' + (pontos > 0 ? 'acerto' : 'erro');
   fb.style.display = 'block';
-  document.getElementById('ano-feedback-titulo').textContent = feedbackTitulo;
-  document.getElementById('ano-feedback-texto').textContent  = feedbackTexto;
+  document.getElementById('ano-feedback-titulo').textContent = `Ano correto: ${r.ano}`;
+  document.getElementById('ano-feedback-texto').textContent  = `${pontos} / ${pontosMaxAno} pontos`;
   document.getElementById('btn-confirmar-ano').style.display = 'none';
 
-  // Avança para fase 2 após 1.5s
-  setTimeout(() => {
-    document.getElementById('fase-slider').style.display   = 'none';
-    document.getElementById('fase-multipla').style.display = 'block';
-    document.getElementById('jogo-layout').classList.add('fase2-ativa');
-    carregarMultipla();
-  }, 1500);
+  // Fica na tela até o jogador clicar para avançar
+  document.getElementById('btn-continuar-desafio2').style.display = 'block';
+}
+
+// ── AVANÇAR PARA O DESAFIO 2 ─────────────────────────
+function continuarDesafio2() {
+  document.getElementById('fase-slider').style.display   = 'none';
+  document.getElementById('fase-multipla').style.display = 'block';
+  document.getElementById('jogo-layout').classList.add('fase2-ativa');
+  carregarMultipla();
 }
 
 // ── MÚLTIPLA ESCOLHA ────────────────────────────────
@@ -1030,6 +1105,9 @@ function carregarMultipla() {
   document.getElementById('pergunta-texto').textContent = r.pergunta;
   document.getElementById('curiosidade-box').style.display = 'none';
   document.getElementById('btn-proxima').style.display     = 'none';
+  const multiplaFeedback = document.getElementById('multipla-feedback');
+  multiplaFeedback.style.display = 'none';
+  multiplaFeedback.className     = 'feedback-pontuacao';
 
   const grid = document.getElementById('opcoes-grid');
   grid.innerHTML = '';
@@ -1068,7 +1146,18 @@ function responderMultipla(idx, btnClicado, r) {
   document.getElementById('score-display').textContent =
     scoreTotal.toLocaleString('pt-BR');
 
+  // Registra o resultado da múltipla escolha nesta rodada
+  rodadasResultado[rodadaAtual].pontosMultipla  = pontos;
+  rodadasResultado[rodadaAtual].acertouMultipla = acertou;
+
   if (pontos > 0) flashPontos('+' + pontos);
+
+  // Feedback objetivo: pontuação obtida sobre a máxima possível da pergunta
+  const fbMultipla = document.getElementById('multipla-feedback');
+  fbMultipla.className = 'feedback-pontuacao ' + (acertou ? 'acerto' : 'erro');
+  fbMultipla.style.display = 'block';
+  document.getElementById('multipla-feedback-titulo').textContent =
+    `${pontos} / ${config.pontuacaoMultipla} pontos`;
 
   // Curiosidade
   document.getElementById('curiosidade-texto').textContent = r.curiosidade;
@@ -1104,7 +1193,7 @@ function mostrarResultado() {
     scoreTotal >= f.minPontos && scoreTotal <= f.maxPontos
   ) || resultado.faixas[resultado.faixas.length - 1];
 
-  document.getElementById('resultado-emoji').textContent  = faixa.emoji;
+  document.getElementById('resultado-emoji').innerHTML     = faixa.icone;
   document.getElementById('resultado-titulo').textContent = faixa.titulo;
   document.getElementById('resultado-faixa').textContent  = faixa.descricao;
 
@@ -1120,6 +1209,22 @@ function mostrarResultado() {
   document.getElementById('bd-pontos-multipla').textContent =
     pontosMultipla.toLocaleString('pt-BR');
 
+  // Detalhamento por rodada
+  const listaDetalhamento = document.getElementById('detalhamento-lista');
+  listaDetalhamento.innerHTML = '';
+  rodadasResultado.forEach(item => {
+    const pontosObtidos = item.pontosAno + item.pontosMultipla;
+    const div = document.createElement('div');
+    div.className = 'detalhamento-item';
+    div.innerHTML = `
+      <span>Foto ${item.numero}: ${item.ano} - ${pontosObtidos} / ${config.pontuacaoMaxRodada} pontos</span>
+      <span class="detalhamento-item-pergunta" style="color:${item.acertouMultipla ? 'var(--verde)' : 'var(--vermelho)'}">
+        Pergunta:
+        <span class="detalhamento-item-icone">${item.acertouMultipla ? ICONE_CERTO : ICONE_ERRADO}</span>
+      </span>`;
+    listaDetalhamento.appendChild(div);
+  });
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1128,10 +1233,22 @@ function getTextoCompartilhamento() {
   const faixa = resultado.faixas.find(f =>
     scoreTotal >= f.minPontos && scoreTotal <= f.maxPontos
   ) || resultado.faixas[resultado.faixas.length - 1];
+
+  const linhasDetalhamento = rodadasResultado.map(item =>
+    resultado.linhaDetalhamento(
+      item.numero,
+      item.ano,
+      item.pontosAno + item.pontosMultipla,
+      config.pontuacaoMaxRodada,
+      item.acertouMultipla
+    )
+  );
+
   return resultado.compartilharTexto(
     scoreTotal.toLocaleString('pt-BR'),
     (rodadas.length * config.pontuacaoMaxRodada).toLocaleString('pt-BR'),
-    faixa.titulo
+    faixa.titulo,
+    linhasDetalhamento
   );
 }
 
@@ -1152,11 +1269,11 @@ function compartilharLinkedIn() {
 function compartilharResultado() {
   const texto = getTextoCompartilhamento() + '\n' + resultado.compartilharUrl;
   const btn = document.getElementById('btn-compartilhar-desktop');
-  const textoOriginal = btn.textContent;
+  const htmlOriginal = btn.innerHTML;
 
   const avisarCopiado = () => {
-    btn.textContent = '✓ Copiado! Cole onde quiser compartilhar';
-    setTimeout(() => { btn.textContent = textoOriginal; }, 3000);
+    btn.innerHTML = ICONE_CERTO + ' Copiado! Cole onde quiser compartilhar';
+    setTimeout(() => { btn.innerHTML = htmlOriginal; }, 3000);
   };
 
   if (navigator.clipboard && navigator.clipboard.writeText) {

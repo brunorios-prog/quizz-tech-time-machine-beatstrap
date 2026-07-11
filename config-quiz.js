@@ -233,6 +233,11 @@ const rodadas = [
 
 
 // ── 5. TELA DE RESULTADO ─────────────────────────────────────
+// Ícones monocromáticos (SVG inline, cor herdada via currentColor) —
+// substituem os antigos emojis coloridos, seguindo a paleta Beatstrap.
+const svgIcone = (path) =>
+  `<svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+
 const resultado = {
   faixas: [
     {
@@ -240,34 +245,40 @@ const resultado = {
       maxPontos:  1999,
       titulo:     "Iniciante Digital",
       descricao:  "Você ainda está começando sua jornada pela história da tecnologia. Mas não se preocupe — os maiores fundadores também começaram do zero.",
-      emoji:      "🌱",
+      icone:      svgIcone('<circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="3.5"></circle>'),
     },
     {
       minPontos:  2000,
       maxPontos:  3999,
       titulo:     "Curioso de Tecnologia",
       descricao:  "Você conhece alguns momentos marcantes, mas ainda há muita história para explorar. Continue mergulhando no ecossistema.",
-      emoji:      "🔍",
+      icone:      svgIcone('<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>'),
     },
     {
       minPontos:  4000,
       maxPontos:  5499,
       titulo:     "Entusiasta do Ecossistema",
       descricao:  "Você tem um bom conhecimento dos marcos que moldaram a tecnologia. Claramente acompanha o setor de perto.",
-      emoji:      "🚀",
+      icone:      svgIcone('<polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline>'),
     },
     {
       minPontos:  5500,
       maxPontos:  8000,
       titulo:     "Enciclopédia Tech",
       descricao:  "Impressionante. Você conhece a história da tecnologia como poucos. O ecossistema de startups agradece sua presença.",
-      emoji:      "🏆",
+      icone:      svgIcone('<circle cx="12" cy="8" r="6.5"></circle><polyline points="8.3 13.9 7 22 12 19.3 17 22 15.7 13.9"></polyline>'),
     },
   ],
 
+  // Formata a linha de detalhamento de uma rodada — usada tanto na tela
+  // de resultado quanto no texto de compartilhamento, para manter os
+  // dois lugares sempre consistentes entre si.
+  linhaDetalhamento: (numero, ano, pontosObtidos, pontosMax, acertouPergunta) =>
+    `Foto ${numero}: ${ano} - ${pontosObtidos} / ${pontosMax} pontos | Pergunta: ${acertouPergunta ? 'Certo' : 'Errado'}`,
+
   // Texto para compartilhamento nas redes
-  compartilharTexto: (pontos, total, faixa) =>
-    `Fiz ${pontos} de ${total} pontos no Tech Time Machine da @Beatstrap e fui classificado como "${faixa}"! Você consegue mais? 🚀`,
+  compartilharTexto: (pontos, total, faixa, linhasDetalhamento) =>
+    `Fiz ${pontos} de ${total} pontos no Tech Time Machine da @Beatstrap e fui classificado como "${faixa}"!\n\n${linhasDetalhamento.join('\n')}\n\nVocê consegue mais?`,
 
   compartilharUrl: "https://techtimemachine.beatstrap.com.br/",
 };
